@@ -24,7 +24,7 @@ struct ContentView: View {
                     .font(.headline)
                 Spacer()
                 Button {
-                    Task { await credits.refresh() }
+                    credits.startPolling(interval: credits.pollInterval)
                 } label: {
                     Image(systemName: "arrow.clockwise")
                 }
@@ -65,9 +65,14 @@ struct ContentView: View {
             }
 
             if let updated = credits.lastUpdated {
-                Text("Updated \(updated.formatted(date: .omitted, time: .shortened))")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+                HStack(spacing: 5) {
+                    Text("Updated \(updated.formatted(date: .omitted, time: .shortened))")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                    if let nextPollDate = credits.nextPollDate {
+                        PollCountdownRing(nextPollDate: nextPollDate, interval: credits.pollInterval)
+                    }
+                }
             }
 
             Divider()
@@ -123,5 +128,26 @@ struct ContentView: View {
         formatter.currencyCode = "USD"
         formatter.maximumFractionDigits = 2
         return formatter.string(from: NSNumber(value: value)) ?? "$\(value)"
+    }
+}
+
+/// A small ring that depletes clockwise as the next automatic poll approaches,
+/// then resets to full once that poll fires.
+private struct PollCountdownRing: View {
+    let nextPollDate: Date
+    let interval: TimeInterval
+
+    var body: some View {
+        TimelineView(.animation(minimumInterval: 1.0 / 30.0)) { context in
+            let remaining = max(0, nextPollDate.timeIntervalSince(context.date))
+            let fraction = interval > 0 ? remaining / interval : 0
+
+            Circle()
+                .trim(from: 0, to: fraction)
+                .stroke(Color.secondary, style: StrokeStyle(lineWidth: 1.4, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+                .frame(width: 9, height: 9)
+                .accessibilityLabel("Next update in \(Int(remaining)) seconds")
+        }
     }
 }

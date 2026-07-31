@@ -30,6 +30,8 @@ final class CreditsService: ObservableObject {
     @Published var lastUpdated: Date?
     @Published var errorMessage: String?
     @Published var isLoading = false
+    @Published private(set) var pollInterval: TimeInterval = 30
+    @Published private(set) var nextPollDate: Date?
 
     private var timer: Timer?
 
@@ -41,9 +43,15 @@ final class CreditsService: ObservableObject {
     /// Poll every 30 seconds by default. Change `interval` if you want tighter/looser polling.
     func startPolling(interval: TimeInterval = 30) {
         stopPolling()
+        pollInterval = interval
+        nextPollDate = Date().addingTimeInterval(interval)
         Task { await refresh() }
         timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
-            Task { await self?.refresh() }
+            guard let self else { return }
+            Task { @MainActor in
+                self.nextPollDate = Date().addingTimeInterval(interval)
+                await self.refresh()
+            }
         }
     }
 
