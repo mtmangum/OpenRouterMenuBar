@@ -5,7 +5,7 @@ A tiny native macOS menu bar app that shows your OpenRouter credit balance and u
 ## What it does
 - Adds an "OR" icon to your menu bar.
 - Click it to see remaining balance, total used, and total credits.
-- Polls `https://openrouter.ai/api/v1/credits` every 5 minutes automatically, plus a manual refresh button.
+- Polls `https://openrouter.ai/api/v1/credits` every 30 seconds automatically, plus a manual refresh button.
 - Stores your API key in the macOS Keychain (never written to disk in plaintext).
 
 ## Requirements
@@ -41,7 +41,7 @@ add OpenRouterMenuBar.
 
 ## Changing the poll interval
 In `Sources/OpenRouterMenuBar/OpenRouterMenuBarApp.swift`, the call
-`credits.startPolling()` defaults to every 300 seconds. Pass a different
+`credits.startPolling()` defaults to every 30 seconds. Pass a different
 `interval:` value (in seconds) to change it.
 
 ## Files

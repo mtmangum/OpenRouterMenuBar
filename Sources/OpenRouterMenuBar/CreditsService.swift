@@ -38,8 +38,8 @@ final class CreditsService: ObservableObject {
         return total - used
     }
 
-    /// Poll every 5 minutes by default. Change `interval` if you want tighter/looser polling.
-    func startPolling(interval: TimeInterval = 300) {
+    /// Poll every 30 seconds by default. Change `interval` if you want tighter/looser polling.
+    func startPolling(interval: TimeInterval = 30) {
         stopPolling()
         Task { await refresh() }
         timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
