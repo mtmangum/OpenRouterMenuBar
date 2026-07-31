@@ -50,3 +50,4 @@ In `Sources/OpenRouterMenuBar/OpenRouterMenuBarApp.swift`, the call
 - `ContentView.swift` — the dropdown UI (balance, usage bar, key entry).
 - `OpenRouterMenuBarApp.swift` — app entry point (MenuBarExtra).
 - `build_app.sh` — packages a release build into a distributable `.app`.
+- `Resources/MenuBarIcon.pdf` — vector "OR" monogram shown in the menu bar.

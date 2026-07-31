@@ -9,7 +9,10 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "OpenRouterMenuBar",
-            path: "Sources/OpenRouterMenuBar"
+            path: "Sources/OpenRouterMenuBar",
+            resources: [
+                .copy("Resources/MenuBarIcon.pdf")
+            ]
         )
     ]
 )
