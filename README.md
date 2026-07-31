@@ -3,7 +3,7 @@
 A tiny native macOS menu bar app that shows your OpenRouter credit balance and usage.
 
 ## What it does
-- Adds a credit-card icon to your menu bar.
+- Adds an "OR" icon to your menu bar.
 - Click it to see remaining balance, total used, and total credits.
 - Polls `https://openrouter.ai/api/v1/credits` every 5 minutes automatically, plus a manual refresh button.
 - Stores your API key in the macOS Keychain (never written to disk in plaintext).
