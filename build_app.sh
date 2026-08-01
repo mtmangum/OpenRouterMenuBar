@@ -2,6 +2,7 @@
 set -euo pipefail
 
 APP_NAME="OpenRouterMenuBar"
+VERSION="1.0.0"
 BUILD_DIR=".build/release"
 APP_BUNDLE="${APP_NAME}.app"
 
@@ -30,9 +31,9 @@ cat > "$APP_BUNDLE/Contents/Info.plist" <<PLIST
     <key>CFBundleIdentifier</key>
     <string>com.local.OpenRouterMenuBar</string>
     <key>CFBundleVersion</key>
-    <string>1.0</string>
+    <string>${VERSION}</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.0</string>
+    <string>${VERSION}</string>
     <key>CFBundleExecutable</key>
     <string>${APP_NAME}</string>
     <key>CFBundlePackageType</key>
