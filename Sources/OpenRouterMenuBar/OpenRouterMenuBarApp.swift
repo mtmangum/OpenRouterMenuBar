@@ -4,7 +4,7 @@ import AppKit
 @main
 struct OpenRouterMenuBarApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @StateObject private var credits = CreditsService()
+    @State private var credits = CreditsService()
 
     var body: some Scene {
         MenuBarExtra {

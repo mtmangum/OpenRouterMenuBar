@@ -9,7 +9,7 @@ A tiny native macOS menu bar app that shows your OpenRouter credit balance and u
 - Stores your API key in the macOS Keychain (never written to disk in plaintext).
 
 ## Requirements
-- macOS 13 (Ventura) or later.
+- macOS 14 (Sonoma) or later.
 - Xcode Command Line Tools (for the `swift` compiler). If you don't have them:
   ```
   xcode-select --install

@@ -1,9 +1,13 @@
 import SwiftUI
 
 struct ContentView: View {
-    @ObservedObject var credits: CreditsService
+    var credits: CreditsService
     @State private var apiKeyInput: String = ""
     @State private var showingKeyEntry: Bool = KeychainHelper.load() == nil
+
+    private var trimmedKeyInput: String {
+        apiKeyInput.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -24,7 +28,7 @@ struct ContentView: View {
                     .font(.headline)
                 Spacer()
                 Button {
-                    credits.startPolling(interval: credits.pollInterval)
+                    credits.refreshNow()
                 } label: {
                     Image(systemName: "arrow.clockwise")
                 }
@@ -110,24 +114,20 @@ struct ContentView: View {
             HStack {
                 Spacer()
                 Button("Save") {
-                    let trimmed = apiKeyInput.trimmingCharacters(in: .whitespacesAndNewlines)
+                    let trimmed = trimmedKeyInput
                     guard !trimmed.isEmpty else { return }
                     KeychainHelper.save(apiKey: trimmed)
                     showingKeyEntry = false
-                    Task { await credits.refresh() }
+                    credits.refreshNow()
                 }
                 .keyboardShortcut(.defaultAction)
-                .disabled(apiKeyInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                .disabled(trimmedKeyInput.isEmpty)
             }
         }
     }
 
     private func formatted(_ value: Double) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.currencyCode = "USD"
-        formatter.maximumFractionDigits = 2
-        return formatter.string(from: NSNumber(value: value)) ?? "$\(value)"
+        value.formatted(.currency(code: "USD"))
     }
 }
 

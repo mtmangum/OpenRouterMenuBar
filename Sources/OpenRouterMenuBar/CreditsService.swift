@@ -1,39 +1,38 @@
 import Foundation
-import Combine
+import Observation
 
 struct CreditsResponse: Decodable {
-    struct Data: Decodable {
-        let total_credits: Double
-        let total_usage: Double
+    struct Credits: Decodable {
+        let totalCredits: Double
+        let totalUsage: Double
     }
-    let data: Data
+    let data: Credits
 }
 
 enum CreditsError: LocalizedError {
     case noAPIKey
     case badStatus(Int)
-    case decoding
 
     var errorDescription: String? {
         switch self {
         case .noAPIKey: return "No API key set"
         case .badStatus(let code): return "OpenRouter returned status \(code)"
-        case .decoding: return "Couldn't parse OpenRouter's response"
         }
     }
 }
 
 @MainActor
-final class CreditsService: ObservableObject {
-    @Published var totalCredits: Double?
-    @Published var totalUsage: Double?
-    @Published var lastUpdated: Date?
-    @Published var errorMessage: String?
-    @Published var isLoading = false
-    @Published private(set) var pollInterval: TimeInterval = 30
-    @Published private(set) var nextPollDate: Date?
+@Observable
+final class CreditsService {
+    private(set) var totalCredits: Double?
+    private(set) var totalUsage: Double?
+    private(set) var lastUpdated: Date?
+    private(set) var errorMessage: String?
+    private(set) var isLoading = false
+    private(set) var pollInterval: TimeInterval = 30
+    private(set) var nextPollDate: Date?
 
-    private var timer: Timer?
+    private var pollTask: Task<Void, Never>?
 
     var remaining: Double? {
         guard let total = totalCredits, let used = totalUsage else { return nil }
@@ -44,20 +43,24 @@ final class CreditsService: ObservableObject {
     func startPolling(interval: TimeInterval = 30) {
         stopPolling()
         pollInterval = interval
-        nextPollDate = Date().addingTimeInterval(interval)
-        Task { await refresh() }
-        timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
-            guard let self else { return }
-            Task { @MainActor in
-                self.nextPollDate = Date().addingTimeInterval(interval)
-                await self.refresh()
+        pollTask = Task {
+            while !Task.isCancelled {
+                let nextPoll = Date().addingTimeInterval(interval)
+                nextPollDate = nextPoll
+                await refresh()
+                try? await Task.sleep(for: .seconds(max(0, nextPoll.timeIntervalSinceNow)))
             }
         }
     }
 
     func stopPolling() {
-        timer?.invalidate()
-        timer = nil
+        pollTask?.cancel()
+        pollTask = nil
+    }
+
+    /// Fetches immediately and restarts the poll countdown.
+    func refreshNow() {
+        startPolling(interval: pollInterval)
     }
 
     func refresh() async {
@@ -80,15 +83,19 @@ final class CreditsService: ObservableObject {
                 throw CreditsError.badStatus(code)
             }
 
-            let decoded = try JSONDecoder().decode(CreditsResponse.self, from: data)
-            self.totalCredits = decoded.data.total_credits
-            self.totalUsage = decoded.data.total_usage
-            self.lastUpdated = Date()
-            self.errorMessage = nil
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            let decoded = try decoder.decode(CreditsResponse.self, from: data)
+            totalCredits = decoded.data.totalCredits
+            totalUsage = decoded.data.totalUsage
+            lastUpdated = Date()
+            errorMessage = nil
         } catch let error as CreditsError {
-            self.errorMessage = error.localizedDescription
+            errorMessage = error.localizedDescription
+        } catch is DecodingError {
+            errorMessage = "Couldn't parse OpenRouter's response"
         } catch {
-            self.errorMessage = "Network error: \(error.localizedDescription)"
+            errorMessage = "Network error: \(error.localizedDescription)"
         }
     }
 }
