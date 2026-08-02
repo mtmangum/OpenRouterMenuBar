@@ -4,6 +4,7 @@ struct ContentView: View {
     var credits: CreditsService
     @State private var apiKeyInput: String = ""
     @State private var showingKeyEntry: Bool = KeychainHelper.load() == nil
+    @State private var launchAtLogin: Bool = LaunchAtLogin.isEnabled
 
     private var trimmedKeyInput: String {
         apiKeyInput.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -80,6 +81,19 @@ struct ContentView: View {
             }
 
             Divider()
+
+            if LaunchAtLogin.isAvailable {
+                Toggle("Launch at login", isOn: $launchAtLogin)
+                    .toggleStyle(.checkbox)
+                    .font(.caption)
+                    .onChange(of: launchAtLogin) { _, enabled in
+                        do {
+                            try LaunchAtLogin.setEnabled(enabled)
+                        } catch {
+                            launchAtLogin = LaunchAtLogin.isEnabled
+                        }
+                    }
+            }
 
             HStack {
                 Button("Change API Key") {

@@ -36,8 +36,8 @@ This produces `OpenRouterMenuBar.app` in the project folder. Drag it into
 `/Applications`, then double-click to launch. Since it's not signed/notarized,
 the first launch needs a right-click → Open (macOS Gatekeeper will otherwise block it).
 
-To have it launch automatically at login: System Settings → General → Login Items →
-add OpenRouterMenuBar.
+To have it launch automatically at login, tick "Launch at login" in the app's
+popover (or add it manually via System Settings → General → Login Items).
 
 ## Changing the poll interval
 In `Sources/OpenRouterMenuBar/OpenRouterMenuBarApp.swift`, the call
