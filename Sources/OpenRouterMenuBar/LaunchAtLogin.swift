@@ -6,9 +6,7 @@ import ServiceManagement
 /// `swift run` there is no bundle to register, so this reports unavailable.
 @MainActor
 enum LaunchAtLogin {
-    static var isAvailable: Bool {
-        Bundle.main.bundleIdentifier != nil
-    }
+    static var isAvailable: Bool { true }
 
     static var isEnabled: Bool {
         SMAppService.mainApp.status == .enabled

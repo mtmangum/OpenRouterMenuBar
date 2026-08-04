@@ -82,18 +82,17 @@ struct ContentView: View {
 
             Divider()
 
-            if LaunchAtLogin.isAvailable {
-                Toggle("Launch at login", isOn: $launchAtLogin)
-                    .toggleStyle(.checkbox)
-                    .font(.caption)
-                    .onChange(of: launchAtLogin) { _, enabled in
-                        do {
-                            try LaunchAtLogin.setEnabled(enabled)
-                        } catch {
-                            launchAtLogin = LaunchAtLogin.isEnabled
-                        }
+            Toggle("Launch at login", isOn: $launchAtLogin)
+                .toggleStyle(.checkbox)
+                .font(.caption)
+                .disabled(!LaunchAtLogin.isAvailable)
+                .onChange(of: launchAtLogin) { _, enabled in
+                    do {
+                        try LaunchAtLogin.setEnabled(enabled)
+                    } catch {
+                        launchAtLogin = LaunchAtLogin.isEnabled
                     }
-            }
+                }
 
             HStack {
                 Button("Change API Key") {
