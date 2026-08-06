@@ -6,9 +6,6 @@ VERSION="1.0.0"
 BUILD_DIR=".build/release"
 APP_BUNDLE="${APP_NAME}.app"
 
-BUILD_TIME=$(date '+%Y-%m-%d %H:%M:%S')
-echo "enum BuildInfo { static let time = \"$BUILD_TIME\" }" > Sources/OpenRouterMenuBar/BuildInfo.swift
-
 echo "Building release binary..."
 swift build -c release
 

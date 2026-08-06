@@ -112,11 +112,7 @@ struct ContentView: View {
                 .font(.caption)
             }
 
-            Text("Built \(BuildInfo.time)")
-                .font(.caption2)
-                .foregroundStyle(.tertiary)
-                .textSelection(.enabled)
-        }
+}
     }
 
     private var keyEntryView: some View {
