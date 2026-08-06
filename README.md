@@ -22,7 +22,7 @@ A tiny native macOS menu bar app that shows your OpenRouter credit balance and u
 chmod +x deploy.sh
 ./deploy.sh
 ```
-This builds a release `.app`, installs it to `/Applications`, ad-hoc signs it, and launches it.
+This builds a release `.app`, installs it to `~/Applications`, ad-hoc signs it, and launches it. No admin password required.
 
 On first run you'll be prompted for your OpenRouter API key — find yours at
 https://openrouter.ai/settings/keys. When the macOS Keychain prompt appears,
