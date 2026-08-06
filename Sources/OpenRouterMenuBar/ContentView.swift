@@ -46,6 +46,7 @@ struct ContentView: View {
                         .foregroundStyle(.secondary)
                     Text(formatted(remaining))
                         .font(.system(size: 26, weight: .semibold, design: .rounded))
+                        .foregroundStyle(remaining < 2 ? Color.red : remaining <= 10 ? Color.orange : Color.green)
                 }
 
                 if let total = credits.totalCredits, let used = credits.totalUsage {
@@ -110,6 +111,11 @@ struct ContentView: View {
                 .buttonStyle(.plain)
                 .font(.caption)
             }
+
+            Text("Built \(BuildInfo.time)")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+                .textSelection(.enabled)
         }
     }
 

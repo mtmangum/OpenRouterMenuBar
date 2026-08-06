@@ -34,6 +34,10 @@ final class CreditsService {
 
     private var pollTask: Task<Void, Never>?
 
+    init() {
+        startPolling()
+    }
+
     var remaining: Double? {
         guard let total = totalCredits, let used = totalUsage else { return nil }
         return total - used
