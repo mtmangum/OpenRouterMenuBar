@@ -111,8 +111,7 @@ struct ContentView: View {
                 .buttonStyle(.plain)
                 .font(.caption)
             }
-
-}
+        }
     }
 
     private var keyEntryView: some View {
