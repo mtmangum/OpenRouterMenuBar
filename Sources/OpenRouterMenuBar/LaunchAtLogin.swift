@@ -1,13 +1,8 @@
 import Foundation
 import ServiceManagement
 
-/// Wraps SMAppService registration of the main app as a login item.
-/// Only meaningful when running from the built .app bundle; under
-/// `swift run` there is no bundle to register, so this reports unavailable.
 @MainActor
 enum LaunchAtLogin {
-    static var isAvailable: Bool { true }
-
     static var isEnabled: Bool {
         SMAppService.mainApp.status == .enabled
     }

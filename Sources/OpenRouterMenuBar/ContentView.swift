@@ -86,7 +86,6 @@ struct ContentView: View {
             Toggle("Launch at login", isOn: $launchAtLogin)
                 .toggleStyle(.checkbox)
                 .font(.caption)
-                .disabled(!LaunchAtLogin.isAvailable)
                 .onChange(of: launchAtLogin) { _, enabled in
                     do {
                         try LaunchAtLogin.setEnabled(enabled)
